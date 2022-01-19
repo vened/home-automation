@@ -4,9 +4,17 @@
   "main": "index.js",
   "license": "MIT",
   "scripts": {
-    "start": "node ./index.js"
+    "start": "nodemon ./index.js",
+    "dev": "nodemon ./root.js",
+    "br": "nodemon ./brocker.js"
   },
   "dependencies": {
-    "mqtt": "^4.2.8"
+    "aedes": "^0.46.2",
+    "async-mqtt": "^2.6.1",
+    "mqtt": "^4.2.8",
+    "websocket-stream": "^5.5.2"
+  },
+  "devDependencies": {
+    "nodemon": "2.0.15"
   }
 }
