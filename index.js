@@ -1,6 +1,10 @@
+// TODO эта хрень коннектится к серверу где развернут дополнительный брокер от моего wb
 const { connect } = require('mqtt');
-const MQTT_ADDR = 'mqtt://192.168.31.236';
-const client = connect(MQTT_ADDR, { clientId: 'webClient', keeplive: 1, clean: false, debug: false });
+// const MQTT_ADDR = 'mqtt://192.168.31.236';
+const MQTT_ADDR = 'mqtt://176.112.203.65';
+
+
+const client = connect(MQTT_ADDR, { username: 'test', password: 'wbpassword', clientId: 'webClient', keeplive: 1, clean: false, debug: false });
 
 const MQTT_TOPIC = '/devices/wb-gpio/controls/EXT1_IN14';
 const MQTT_TOPIC1 = '/devices/wb-gpio/controls/EXT2_R3A1';
@@ -9,11 +13,12 @@ const MQTT_TOPIC3 = '/devices/wb-ms_99/controls/Illuminance';
 const MQTT_TOPIC4 = '/devices/wb-ms_99/controls/Temperature';
 
 client.on('connect', function () {
-  // client.subscribe(MQTT_TOPIC);
-  // client.subscribe(MQTT_TOPIC1);
-  // client.subscribe(MQTT_TOPIC2);
-  // client.subscribe(MQTT_TOPIC3);
-  // client.subscribe(MQTT_TOPIC4);
+  // client.subscribe('aedes/hello');
+  client.subscribe(MQTT_TOPIC);
+  client.subscribe(MQTT_TOPIC1);
+  client.subscribe(MQTT_TOPIC2);
+  client.subscribe(MQTT_TOPIC3);
+  client.subscribe(MQTT_TOPIC4);
   // client.subscribe('/devices/0x00158d000410b4f3/controls/humidity');
   // client.subscribe('/devices/wb-ms_99/controls/Air Quality (VOC)');
   // client.subscribe('/devices/wb-gpio/controls/EXT2_R3A1');
@@ -35,7 +40,8 @@ var timerLongPress = null;
 var isLongPress = false;
 client.on('message', function (topic, message) {
   // message is Buffer
-  // console.log('===>', topic, message.toString());
+  console.log('===>', topic, message.toString());
+
 
   if (topic === '/devices/wb-gpio/controls/EXT2_R3A1') {
     console.log('========>>>>>', topic, message.toString());
@@ -55,7 +61,7 @@ client.on('message', function (topic, message) {
         client.publish('/devices/wb-gpio/controls/EXT2_R3A1', '1', { qos: 2 });
         isLongPress = true;
         timerLongPress = null;
-      }, 100);
+      }, 1000);
     }
     if (message.toString() == 0) {
       if (timerLongPress) {
