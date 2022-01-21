@@ -28,8 +28,23 @@ const sequelize = new Sequelize(
     },
 );
 
-const { Temperature } = defineModels(sequelize);
+// Test connection
+console.info('SETUP - Connecting database...');
 
+async function PgConnect() {
+  try {
+    await sequelize.authenticate();
+    console.log(`Соединение с сервером установлено!`);
+  } catch (err) {
+    console.error(`Не удалось установить соединение по причине: ${err}`);
+  }
+
+  await sequelize.sync({ force: true });
+}
+
+PgConnect();
+
+const { Temperature } = defineModels(sequelize);
 
 module.exports = {
   sequelize,

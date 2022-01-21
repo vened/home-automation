@@ -53,10 +53,10 @@ client.on('message', async function (topic, message) {
 
   if (topic === '/devices/wb-ms_99/controls/External Sensor 1') {
     console.log('========>>>>>', topic, message.toString());
-    // console.log(topic, message.toString());
+    console.log(topic, message.toString());
     // console.log('<<<<<=========');
 
-    await sequelize.sync({ force: false });
+    // await sequelize.sync({ force: false });
     await Temperature.create({ value: message.toString() });
     // async function PgConnect() {
     // try {
@@ -72,6 +72,11 @@ client.on('message', async function (topic, message) {
     // }
 
     // PgConnect();
+  }
+
+  if (topic === '/devices/wb-ms_99/controls/Temperature') {
+    console.log('========>>>>>', topic, message.toString());
+    await Temperature.create({ value: message.toString() });
   }
 
   if (topic === MQTT_TOPIC) {
