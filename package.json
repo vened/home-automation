@@ -4,15 +4,17 @@
   "main": "index.js",
   "license": "MIT",
   "scripts": {
-    "start": "nodemon ./index.js",
+    "start": "nodemon -r dotenv/config ./index.js",
     "dev": "nodemon ./root.js",
     "br": "nodemon ./brocker.js"
   },
   "dependencies": {
     "aedes": "^0.46.2",
     "async-mqtt": "^2.6.1",
+    "dotenv": "14.2.0",
     "mqtt": "^4.2.8",
     "pg": "8.7.1",
+    "sequelize": "6.13.0",
     "websocket-stream": "^5.5.2"
   },
   "devDependencies": {

@@ -1,10 +1,21 @@
 // TODO эта хрень коннектится к серверу где развернут дополнительный брокер от моего wb
+// брокер на сервер настроен по инструкции https://wirenboard.com/wiki/index.php/MQTT#%D0%A0%D0%B0%D0%B1%D0%BE%D1%82%D0%B0_%D1%81_%D1%81%D0%BE%D0%BE%D0%B1%D1%89%D0%B5%D0%BD%D0%B8%D1%8F%D0%BC%D0%B8_MQTT_%D1%81_%D0%B2%D0%BD%D0%B5%D1%88%D0%BD%D0%B5%D0%B3%D0%BE_%D1%83%D1%81%D1%82%D1%80%D0%BE%D0%B9%D1%81%D1%82%D0%B2%D0%B0
 const { connect } = require('mqtt');
+const sequelize = require(`./services/sequelize`);
+const defineModels = require(`./models`);
+
+
+
 // const MQTT_ADDR = 'mqtt://192.168.31.236';
 const MQTT_ADDR = 'mqtt://176.112.203.65';
-
-
-const client = connect(MQTT_ADDR, { username: 'test', password: 'wbpassword', clientId: 'webClient', keeplive: 1, clean: false, debug: false });
+const client = connect(MQTT_ADDR, {
+  username: 'test',
+  password: 'wbpassword',
+  clientId: 'webClient',
+  keeplive: 1,
+  clean: false,
+  debug: false,
+});
 
 const MQTT_TOPIC = '/devices/wb-gpio/controls/EXT1_IN14';
 const MQTT_TOPIC1 = '/devices/wb-gpio/controls/EXT2_R3A1';
@@ -19,10 +30,10 @@ client.on('connect', function () {
   client.subscribe(MQTT_TOPIC2);
   client.subscribe(MQTT_TOPIC3);
   client.subscribe(MQTT_TOPIC4);
-  // client.subscribe('/devices/0x00158d000410b4f3/controls/humidity');
-  // client.subscribe('/devices/wb-ms_99/controls/Air Quality (VOC)');
-  // client.subscribe('/devices/wb-gpio/controls/EXT2_R3A1');
-  // client.publish(MQTT_TOPIC, '3');
+  client.subscribe('/devices/0x00158d000410b4f3/controls/humidity');
+  client.subscribe('/devices/wb-ms_99/controls/Air Quality (VOC)');
+  client.subscribe('/devices/wb-gpio/controls/EXT2_R3A1');
+  // client.publish(MQTT_TOPIC1, '0', { qos: 2 });
   // client.end()
 });
 
@@ -40,13 +51,27 @@ var timerLongPress = null;
 var isLongPress = false;
 client.on('message', function (topic, message) {
   // message is Buffer
-  console.log('===>', topic, message.toString());
+  // console.log('===>', topic, message.toString());
 
-
-  if (topic === '/devices/wb-gpio/controls/EXT2_R3A1') {
+  if (topic === '/devices/wb-ms_99/controls/External Sensor 1') {
     console.log('========>>>>>', topic, message.toString());
     // console.log(topic, message.toString());
     // console.log('<<<<<=========');
+    async function PgConnect() {
+      // try {
+      //   await sequelize.authenticate();
+      //   console.log(`Соединение с сервером установлено!`);
+      // } catch (err) {
+      //   console.error(`Не удалось установить соединение по причине: ${err}`);
+      // }
+
+      const { Temperature } = defineModels(sequelize);
+      await sequelize.sync({ force: false });
+
+      await Temperature.create({ value: message.toString() });
+    }
+
+    PgConnect();
   }
 
   if (topic === MQTT_TOPIC) {
