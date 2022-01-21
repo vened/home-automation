@@ -6,3 +6,7 @@ mqtt брокер на сервер настроен по инструкции h
 
 https://habr.com/ru/post/565062/
 
+https://github.com/sequelize/express-example
+
+https://nodejsdev.ru/doc/sql/
+
