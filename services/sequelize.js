@@ -38,13 +38,17 @@ async function PgConnect() {
   } catch (err) {
     console.error(`Не удалось установить соединение по причине: ${err}`);
   }
-
-  await sequelize.sync({ force: true });
 }
 
 PgConnect();
 
 const { Temperature } = defineModels(sequelize);
+
+async function SyncDb(){
+  await sequelize.sync({ force: true });
+}
+
+SyncDb();
 
 module.exports = {
   sequelize,
