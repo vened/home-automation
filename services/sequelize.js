@@ -45,7 +45,7 @@ PgConnect();
 const { Temperature } = defineModels(sequelize);
 
 async function SyncDb(){
-  await sequelize.sync({ force: true });
+  await sequelize.sync({ force: false });
 }
 
 SyncDb();
